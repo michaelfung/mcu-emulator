@@ -1,0 +1,73 @@
+# for scratch only
+
+    J.Add('devices', TJSONArray.Create(
+      [TJSONObject.Create(['type', 'power_control', 'device_id', '1',
+      'power', TJSONBoolean.Create(PowerControl1)]),
+      TJSONObject.Create(['type', 'contact_sensor', 'device_id',
+      '2', 'contact', TJSONBoolean.Create(ContactSensor1)]),
+      TJSONObject.Create(['type', 'alarm', 'device_id', '3',
+      'arm', TJSONBoolean.Create(AlarmArmed),
+      'fire', TJSONBoolean.Create(fAlarmFired)])]));
+   mylog('Send:' + J.AsJSON);
+
+    // return if disconnected
+    // if not SockConnected then exit;
+
+    // Send using mysock
+    mysock.SendString(J.AsJSON + CRLF);
+
+  // Read Params from INI file
+  ConfIni := Tinifile.Create(INIFilePath);
+  fMCUID := ConfIni.ReadString('Default', 'MCUID', 'EMU-000001');
+  fMfgCode := ConfIni.ReadString('Default', 'MfgCode', '12345678');
+  ServerName := ConfIni.ReadString('Default', 'ServerName', 'localhost');
+  ServerPort := ConfIni.ReadString('Default', 'ServerPort', '9123');
+  AutoReConnect := ConfIni.ReadBool('Default', 'AutoReConnect', False);
+  ConnectOnStart := ConfIni.ReadBool('Default', 'ConnectOnStart', False);
+  SuperKey := ConfIni.ReadString('Default', 'SuperKey', '90909090');
+  UserKey := ConfIni.ReadString('Default', 'UserKey', '10101010');
+
+  // enable auto reconnect
+  //AutoReConnect := True;
+
+    // disable auto reconnect
+  AutoReConnect := False;
+
+
+[3/2/2013 14:23:27] === Application Starts ===
+[3/2/2013 14:23:27] Sock Status:HR_ResolvingBegin:mint-vb:9123
+[3/2/2013 14:23:28] Sock Status:HR_ResolvingEnd:192.168.0.242:9123
+[3/2/2013 14:23:28] Sock Status:HR_SocketCreate:IPv4
+[3/2/2013 14:23:28] Sock Status:HR_Connect:mint-vb:9123
+[3/2/2013 14:23:28] SSL Peer Cert Subject:/C=HK/ST=Hong Kong/L=Hong Kong/O=3Open/CN=mint-vb.example.com
+[3/2/2013 14:23:28] SSL Peer Verify OK.
+[3/2/2013 14:23:28] Send:{ "id" : "0", "method" : "status", "controller_id" : "EMU-1305", "devices" : [{ "type" : "power_sensor", "device_id" : "1", "state" : false }, { "type" : "contact_sensor", "device_id" : "2", "state" : true }, { "type" : "alarm", "device_id" : "3", "armed" : false, "fired" : false }] }
+[3/2/2013 14:23:28] Recv:{"desc":"[Child 3] Welcome client 1","method":"noop","id":0}
+[3/2/2013 14:23:28] Recv:{"desc":"Access Granted","method":"noop","id":0,"result":true}
+[3/2/2013 14:23:58] Recv:PING
+[3/2/2013 14:23:58] Send: PONG
+[3/2/2013 14:24:28] Recv:PING
+[3/2/2013 14:24:28] Send: PONG
+[3/2/2013 14:24:58] Recv:PING
+[3/2/2013 14:24:58] Send: PONG
+[3/2/2013 14:25:15] Sock Status:HR_SocketClose:
+[3/2/2013 14:25:15] === Application Terminates ===
+
+
+{ "id" : "0", "op" : "status", "controller_id" : "EMU-1305", "data" :
+ [
+
+ { "type" : "power", "name" : "PowerSensor1", "state" : false },
+ { "type" : "contact", "name" : "ContactSensor1", "state" : true },
+ { "type" : "alarm", "name" : "Alarm1", "armed" : false, "fired" : false }
+
+
+ ] }
+
+ Send:{ "id" : "0", "method" : "status", "controller_id" : "EMU-1305", "devices" :
+  [
+  { "type" : "power_sensor", "device_id" : "1", "state" : false },
+   { "type" : "contact_sensor", "device_id" : "2", "state" : true },
+   { "type" : "alarm", "device_id" : "3", "armed" : false, "fired" : false }
+
+  ] }

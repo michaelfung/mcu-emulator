@@ -1,0 +1,8 @@
+img\room.png
+img\room-dark.png
+img\alarm-armed.png
+img\alarm-disarmed.png
+img\mcu-on.png
+img\mcu-off.png
+
+
