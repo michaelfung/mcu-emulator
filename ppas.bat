@@ -12,3 +12,4 @@ goto end
 :linkend
 echo An error occured while linking %THEFILE%
 :end
+
