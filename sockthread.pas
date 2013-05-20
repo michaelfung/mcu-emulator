@@ -51,8 +51,6 @@ end;
 
 destructor Tsockthread.Destroy;
 begin
-  //fStatusText := 'Read thread terminated';
-  //Synchronize(@DoLog);
   Mylog('Sock thread terminated');
   inherited Destroy;
 end;

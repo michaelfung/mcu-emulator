@@ -16,7 +16,7 @@ type
     btnSave: TButton;
     btnCancel: TButton;
     cbUseSSL: TCheckBox;
-    cbConnectOnStart: TCheckBox;
+    cbMCUAutoOn: TCheckBox;
     cbAutoReConnect: TCheckBox;
     edControllerID: TLabeledEdit;
     edMfgCode: TLabeledEdit;
@@ -58,10 +58,9 @@ begin
   ConfIni.WriteString('Default', 'MfgCode', edMfgCode.Text);
   ConfIni.WriteString('Default', 'ServerName', edServerName.Text);
   ConfIni.WriteString('Default', 'ServerPort', edServerPort.Text);
-  //ConfIni.WriteBool('Default', 'RestoreStatus', cbRestoreStatus.Checked);
   ConfIni.WriteBool('Default', 'UseSSL', cbUseSSL.Checked);
   ConfIni.WriteBool('Default', 'AutoReConnect', cbAutoReConnect.Checked);
-  ConfIni.WriteBool('Default', 'ConnectOnStart', cbConnectOnStart.Checked);
+  ConfIni.WriteBool('Default', 'MCUAutoOn', cbMCUAutoOn.Checked);
   ConfIni.WriteString('Default', 'SuperKey', edSuperKey.Text);
   ConfIni.WriteString('Default', 'UserKey', edUserKey.Text);
 end;
@@ -81,8 +80,7 @@ begin
   edServerPort.Text := ConfIni.ReadString('Default', 'ServerPort', '');
   cbUseSSL.Checked := ConfIni.ReadBool('Default', 'UseSSL', True);
   cbAutoReConnect.Checked := ConfIni.ReadBool('Default', 'AutoReConnect', True);
-  cbConnectOnStart.Checked := ConfIni.ReadBool('Default', 'ConnectOnStart', True);
- // cbRestoreStatus.Checked := ConfIni.ReadBool('Default', 'RestoreStatus', True);
+  cbMCUAutoOn.Checked := ConfIni.ReadBool('Default', 'MCUAutoOn', True);
   edSuperKey.Text := ConfIni.ReadString('Default', 'SuperKey', '90909090');
   edUserKey.Text := ConfIni.ReadString('Default', 'UserKey', '10101010');
 

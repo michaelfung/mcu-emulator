@@ -82,7 +82,7 @@ object fmSettings: TfmSettings
         TabOrder = 1
         OnChange = edConfigChange
       end
-      object cbConnectOnStart: TCheckBox
+      object cbMCUAutoOn: TCheckBox
         Left = 92
         Height = 19
         Top = 104

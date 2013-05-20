@@ -251,7 +251,7 @@ begin
   else
   begin
     mylog('Alarm silenced.');
-    imgSirenSound.Visible := false;
+    imgSirenSound.Visible := False;
     fAlarmFired := False;
     sndPlaySound(nil, 0); // Stops the sound
   end;
@@ -288,7 +288,7 @@ begin
     if AlarmARmed then
     begin
       // sound siren
-      imgSirenSound.visible := true;
+      imgSirenSound.Visible := True;
       SoundAlarm(True);
     end;
   end
@@ -390,7 +390,7 @@ begin
   //miAutoReconnect.Checked := AutoReconnect;
   miTest.Enabled := False;
   miLogKeepalive.Checked := LogKeepalive;
-  lblMCUID.Caption := 'Controller ID: ' + fMCUID;
+  lblMCUID.Caption := 'MCU ID: ' + fMCUID;
   lblMCUKey.Caption := 'Super Key: ' + SuperKey;
 
   if (ConnectOnStart) then
@@ -476,6 +476,13 @@ end;
 
 procedure TfmMain.acPowerOnMCUExecute(Sender: TObject);
 begin
+  if ((fmMain.fMCUID = 'To-Be-Set') or (fmMain.fMCUID = '')) then
+  begin
+    MessageDlg('Please contact us to get a valid MCU ID.',
+      mtInformation, [mbOK], 0);
+    exit;
+  end;
+
   IsMCUPowerOn := True;
   miTest.Enabled := True;
   imgMCU.Picture.LoadFromLazarusResource('mcu-on');
@@ -576,7 +583,7 @@ begin
     // disconnect and reload config
     acPowerOffMCU.Execute;
     LoadConfig;
-    lblMCUID.Caption := 'Controller ID: ' + fmMain.fMCUID;
+    lblMCUID.Caption := 'MCU ID: ' + fmMain.fMCUID;
     lblMCUKey.Caption := 'Super Key: ' + SuperKey;
     // reset NeedReload
     NeedReload := False;
@@ -732,13 +739,6 @@ begin
   begin
     fmMain.mylog('Already connected!');
     Result := True;
-    exit;
-  end;
-
-  if ((fmMain.fMCUID = 'To-Be-Set') or (fmMain.fMCUID = '')) then
-  begin
-    MessageDlg('Please contact us to get a unique Controller ID.',
-      mtInformation, [mbOK], 0);
     exit;
   end;
 
@@ -914,7 +914,7 @@ begin
         if ((parsed.Strings['op'] = 'auth') and
           (not parsed.Booleans['result'])) then
         begin
-          MessageDlg('Please contact us to get a valid Controller ID.',
+          MessageDlg('Please contact us to get a valid MCU ID.',
             mtError, [mbOK], 0);
         end;
         exit;
@@ -926,7 +926,7 @@ begin
 
         // validate controller id
         if (fMCUID <> parsed.Strings['mcu_id']) then
-          raise EMyException.Create('Controller ID mismatch:' +
+          raise EMyException.Create('MCU ID mismatch:' +
             parsed.Strings['mcu_id']);
 
         // validate key , raise exception if invalid

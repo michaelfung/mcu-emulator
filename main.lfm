@@ -772,8 +772,8 @@ object fmMain: TfmMain
     Left = 112
     Height = 16
     Top = 320
-    Width = 76
-    Caption = 'Controller ID:'
+    Width = 47
+    Caption = 'MCU ID:'
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
