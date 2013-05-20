@@ -387,7 +387,7 @@ end;
 procedure TfmMain.FormActivate(Sender: TObject);
 begin
   // setup visual components
-  //miAutoReconnect.Checked := AutoReconnect;
+  imgMCU.Picture.LoadFromLazarusResource('mcu-off');
   miTest.Enabled := False;
   miLogKeepalive.Checked := LogKeepalive;
   lblMCUID.Caption := 'MCU ID: ' + fMCUID;
