@@ -843,12 +843,12 @@ object fmMain: TfmMain
     end
     object acTriggerContactSensor: TAction
       Category = 'Test'
-      Caption = 'Trigger Contact Sensor'
+      Caption = 'Trigger Motion Sensor'
       OnExecute = acTriggerContactSensorExecute
     end
     object acResetContactSensor: TAction
       Category = 'Test'
-      Caption = 'Reset Contact Sensor'
+      Caption = 'Reset Motion Sensor'
       OnExecute = acResetContactSensorExecute
     end
     object acArmAlarm: TAction
