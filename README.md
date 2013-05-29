@@ -3,7 +3,7 @@
 This program aims to help develop and test drive the [WongTaiSin Service Project](https://github.com/michaelfung/wts).
 
 ## Requirement for Windows
-### compile
+### Compile
 * lazarus-1.0.6-fpc-2.6.0-win32
 * Synapse Release 40
 * InnoSetup v5 (optional setup builder)
