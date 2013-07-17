@@ -179,8 +179,8 @@ var
 
 const
   AppModel = 'Win32EMU';
-  AppVersion = '0.7';
-  AppProtocol = 3;
+  AppVersion = '0.8';
+  AppProtocol = 4;
 
   KeepAlivePing = 'PING';
   KeepAlivePong = 'PONG';
@@ -446,7 +446,7 @@ procedure TfmMain.acPowerControlOnExecute(Sender: TObject);
 var
   request: String;
 begin
-  request := '{ "id" : 1, "layer":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"1", "power":true} ] }';
   ProcessRequest(request);
 end;
@@ -455,7 +455,7 @@ procedure TfmMain.acPowerControlOffExecute(Sender: TObject);
 var
   request: String;
 begin
-  request := '{ "id" : 1, "layer":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"1", "power":false} ] }';
   ProcessRequest(request);
 end;
@@ -464,7 +464,7 @@ procedure TfmMain.acArmAlarmExecute(Sender: TObject);
 var
   request: String;
 begin
-  request := '{ "id" : 1, "layer":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"3", "arm":true} ] }';
   ProcessRequest(request);
 end;
@@ -515,7 +515,7 @@ procedure TfmMain.acDisarmAlarmExecute(Sender: TObject);
 var
   request: String;
 begin
-  request := '{ "id" : 1, "layer":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"3", "arm":false} ] }';
   ProcessRequest(request);
 end;
@@ -545,7 +545,7 @@ var
   Frame: String;
 begin
   // open dialog to get a line of json text
-  Frame := '{"id":1,"layer":"app","op":"noop"}';
+  Frame := '{"id":1,"type":"app","op":"noop"}';
   if InputQuery('Inject Frame', 'Enter JSON String', Frame) then
     ProcessRequest(Frame);
 end;
@@ -619,7 +619,7 @@ begin
   try
     J.Add('id', 1);
     J.Add('date', TJSONInt64Number.Create(GetUnixTimeStamp));
-    J.Add('layer', 'ssn');
+    J.Add('type', 'ssn');
     J.Add('op', 'auth');
     //J.Add('type', 'q');
     J.Add('params', TJSONObject.Create(['mcu_id', fMCUID, 'mfg_code',
@@ -655,7 +655,7 @@ begin
       J.Add('id', RequestCode);
 
     J.Add('date', TJSONInt64Number.Create(GetUnixTimeStamp));
-    J.Add('layer', 'app');
+    J.Add('type', 'app');
     J.Add('op', 'status');
     J.Add('mcu_id', fMCUID);
     J.Add('devices', GetStatus);
@@ -891,8 +891,8 @@ begin
         exit;
       end;
 
-      // for layer = session
-      if (parsed.Strings['layer'] = 'ssn') then
+      // for type = session
+      if (parsed.Strings['type'] = 'ssn') then
       begin
         // supported session op: 'auth', 'config'
         // - config
@@ -920,8 +920,8 @@ begin
         exit;
       end;
 
-      // for layer = application
-      if (parsed.Strings['layer'] = 'app') then
+      // for type = application
+      if (parsed.Strings['type'] = 'app') then
       begin
 
         // validate controller id
@@ -976,8 +976,8 @@ begin
 
       end;
 
-      // supported layers
-      raise EMyException.Create('Invalid frame layer:' + parsed.Strings['layer']);
+      // supported types
+      raise EMyException.Create('Invalid frame type:' + parsed.Strings['type']);
 
     except
       on E: Exception do
