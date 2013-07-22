@@ -167,7 +167,7 @@ var
   ServerName: String;
   ServerPort: String;
   SuperKey: String;
-  UserKey: String;
+  UserKeys: array [1..3] of string;
   HasSuperKey: Boolean = False;
   myReadThread: TReadThread;
   mySockThread: TSockThread;
@@ -212,7 +212,10 @@ begin
   //AutoReConnect := ConfIni.ReadBool('Default', 'AutoReConnect', False);
   ConnectOnStart := ConfIni.ReadBool('Default', 'ConnectOnStart', False);
   SuperKey := ConfIni.ReadString('Default', 'SuperKey', '90909090');
-  UserKey := ConfIni.ReadString('Default', 'UserKey', '10101010');
+  UserKeys[1] :=  ConfIni.ReadString('Default', 'UserKey1', '10101010');
+//  UserKeys.Append(ConfIni.ReadString('Default', 'UserKey2', '10101010'));
+//  UserKeys.Append(ConfIni.ReadString('Default', 'UserKey3', '10101010'));
+
 end;
 
 function TfmMain.GetStatus: TJSONArray;
@@ -624,7 +627,7 @@ begin
     //J.Add('type', 'q');
     J.Add('params', TJSONObject.Create(['mcu_id', fMCUID, 'mfg_code',
       fMfgCode, 'model', AppModel, 'version', AppVersion, 'protocol',
-      AppProtocol, 'super_key', SuperKey, 'user_key', UserKey]));
+      AppProtocol, 'super_key', SuperKey, 'user_keys', UserKeys ]));
 
     mylog('Send:' + J.AsJSON);
 
@@ -855,10 +858,14 @@ begin
     ConfIni.WriteString('Default', 'SuperKey', SuperKey);
   end;
 
-  if (params.IndexOfName('user_key') <> -1) then
+  if (params.IndexOfName('user_keys') <> -1) then
   begin
-    Userkey := params.Strings['user_key'];
-    ConfIni.WriteString('Default', 'UserKey', Userkey);
+    UserKeys[1] := params.Arrays['user_keys'].Strings[0];
+    UserKeys[2] := params.Arrays['user_keys'].Strings[1];
+    UserKeys[3] := params.Arrays['user_keys'].Strings[2];
+    ConfIni.WriteString('Default', 'UserKey1', UserKeys[1]);
+    ConfIni.WriteString('Default', 'UserKey2', UserKeys[2]);
+    ConfIni.WriteString('Default', 'UserKey3', UserKeys[3]);
   end;
 
   // reply result
@@ -935,7 +942,7 @@ begin
         begin
           HasSuperKey := True;
         end
-        else if (parsed.Strings['key'] = UserKey) then
+        else if ( UserKeys.IndexOf(parsed.Strings['key']) <> -1 ) then
         begin
           HasSuperKey := False;
         end

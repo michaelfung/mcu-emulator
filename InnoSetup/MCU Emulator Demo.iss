@@ -3,7 +3,7 @@
 [Setup]
 ShowLanguageDialog=no
 AppName=MCU Emulator for Domotics Application
-AppVersion=0.7
+AppVersion=0.8
 AppCopyright=Copyright 2013 Michael Fung
 PrivilegesRequired=none
 AppId={{3D2C58A2-B014-47C8-8E3B-22296BB6D45C}
