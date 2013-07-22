@@ -1,12 +1,12 @@
 object fmSettings: TfmSettings
   Left = 669
-  Height = 275
+  Height = 307
   Top = 388
   Width = 345
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 275
+  ClientHeight = 307
   ClientWidth = 345
   OnShow = FormShow
   Position = poOwnerFormCenter
@@ -14,7 +14,7 @@ object fmSettings: TfmSettings
   object btnSave: TButton
     Left = 168
     Height = 25
-    Top = 240
+    Top = 272
     Width = 75
     Caption = 'Save'
     ModalResult = 1
@@ -24,7 +24,7 @@ object fmSettings: TfmSettings
   object btnCancel: TButton
     Left = 256
     Height = 25
-    Top = 240
+    Top = 272
     Width = 75
     Caption = 'Cancel'
     ModalResult = 2
@@ -32,15 +32,15 @@ object fmSettings: TfmSettings
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 224
+    Height = 256
     Top = 8
     Width = 395
-    ActivePage = tsSecurity
-    TabIndex = 1
+    ActivePage = tsGeneral
+    TabIndex = 0
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 196
+      ClientHeight = 228
       ClientWidth = 387
       object edServerName: TLabeledEdit
         Left = 92
@@ -119,7 +119,7 @@ object fmSettings: TfmSettings
     end
     object tsSecurity: TTabSheet
       Caption = 'Security'
-      ClientHeight = 196
+      ClientHeight = 228
       ClientWidth = 387
       object edSuperKey: TLabeledEdit
         Left = 92
@@ -139,28 +139,28 @@ object fmSettings: TfmSettings
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         MaxLength = 8
-        TabOrder = 1
+        TabOrder = 2
         OnChange = edConfigChange
       end
-      object edUserKey: TLabeledEdit
+      object edUserKey1: TLabeledEdit
         Left = 92
         Height = 23
         Top = 136
         Width = 184
-        EditLabel.AnchorSideTop.Control = edUserKey
+        EditLabel.AnchorSideTop.Control = edUserKey1
         EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = edUserKey
-        EditLabel.AnchorSideBottom.Control = edUserKey
+        EditLabel.AnchorSideRight.Control = edUserKey1
+        EditLabel.AnchorSideBottom.Control = edUserKey1
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 40
+        EditLabel.Left = 31
         EditLabel.Height = 16
         EditLabel.Top = 139
-        EditLabel.Width = 49
-        EditLabel.Caption = 'User Key:'
+        EditLabel.Width = 58
+        EditLabel.Caption = 'User Key 1:'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         MaxLength = 8
-        TabOrder = 2
+        TabOrder = 3
         OnChange = edConfigChange
       end
       object edControllerID: TLabeledEdit
@@ -214,7 +214,49 @@ object fmSettings: TfmSettings
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         MaxLength = 8
-        TabOrder = 3
+        TabOrder = 1
+        OnChange = edConfigChange
+      end
+      object edUserKey2: TLabeledEdit
+        Left = 92
+        Height = 23
+        Top = 168
+        Width = 184
+        EditLabel.AnchorSideTop.Control = edUserKey2
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = edUserKey2
+        EditLabel.AnchorSideBottom.Control = edUserKey2
+        EditLabel.AnchorSideBottom.Side = asrBottom
+        EditLabel.Left = 31
+        EditLabel.Height = 16
+        EditLabel.Top = 171
+        EditLabel.Width = 58
+        EditLabel.Caption = 'User Key 2:'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        MaxLength = 8
+        TabOrder = 4
+        OnChange = edConfigChange
+      end
+      object edUserKey3: TLabeledEdit
+        Left = 92
+        Height = 23
+        Top = 200
+        Width = 184
+        EditLabel.AnchorSideTop.Control = edUserKey3
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = edUserKey3
+        EditLabel.AnchorSideBottom.Control = edUserKey3
+        EditLabel.AnchorSideBottom.Side = asrBottom
+        EditLabel.Left = 31
+        EditLabel.Height = 16
+        EditLabel.Top = 203
+        EditLabel.Width = 58
+        EditLabel.Caption = 'User Key 3:'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        MaxLength = 8
+        TabOrder = 5
         OnChange = edConfigChange
       end
     end

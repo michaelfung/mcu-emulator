@@ -1,9 +1,9 @@
 @echo off
 SET THEFILE=mcu.exe
 echo Linking %THEFILE%
-D:\lazarus\fpc\2.6.0\bin\i386-win32\ld.exe -b pei-i386 -m i386pe  --gc-sections  -s --subsystem windows --entry=_WinMainCRTStartup    -o mcu.exe link.res
+E:\lazarus\fpc\2.6.0\bin\i386-win32\ld.exe -b pei-i386 -m i386pe  --gc-sections  -s --subsystem windows --entry=_WinMainCRTStartup    -o mcu.exe link.res
 if errorlevel 1 goto linkend
-D:\lazarus\fpc\2.6.0\bin\i386-win32\postw32.exe --subsystem gui --input mcu.exe --stack 16777216
+E:\lazarus\fpc\2.6.0\bin\i386-win32\postw32.exe --subsystem gui --input mcu.exe --stack 16777216
 if errorlevel 1 goto linkend
 goto end
 :asmend

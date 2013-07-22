@@ -167,7 +167,7 @@ var
   ServerName: String;
   ServerPort: String;
   SuperKey: String;
-  UserKeys: array [1..3] of string;
+  UserKey1, UserKey2, UserKey3: String;
   HasSuperKey: Boolean = False;
   myReadThread: TReadThread;
   mySockThread: TSockThread;
@@ -211,10 +211,10 @@ begin
   UseSSL := ConfIni.ReadBool('Default', 'UseSSL', True);
   //AutoReConnect := ConfIni.ReadBool('Default', 'AutoReConnect', False);
   ConnectOnStart := ConfIni.ReadBool('Default', 'ConnectOnStart', False);
-  SuperKey := ConfIni.ReadString('Default', 'SuperKey', '90909090');
-  UserKeys[1] :=  ConfIni.ReadString('Default', 'UserKey1', '10101010');
-//  UserKeys.Append(ConfIni.ReadString('Default', 'UserKey2', '10101010'));
-//  UserKeys.Append(ConfIni.ReadString('Default', 'UserKey3', '10101010'));
+  SuperKey := ConfIni.ReadString('Default', 'SuperKey', '8888');
+  UserKey1 := ConfIni.ReadString('Default', 'UserKey1', '7771');
+  UserKey2 := ConfIni.ReadString('Default', 'UserKey2', '7772');
+  UserKey3 := ConfIni.ReadString('Default', 'UserKey3', '7773');
 
 end;
 
@@ -627,7 +627,8 @@ begin
     //J.Add('type', 'q');
     J.Add('params', TJSONObject.Create(['mcu_id', fMCUID, 'mfg_code',
       fMfgCode, 'model', AppModel, 'version', AppVersion, 'protocol',
-      AppProtocol, 'super_key', SuperKey, 'user_keys', UserKeys ]));
+      AppProtocol, 'super_key', SuperKey, 'user_keys',
+      TJSONArray.Create([UserKey1, UserKey2, UserKey3])]));
 
     mylog('Send:' + J.AsJSON);
 
@@ -860,12 +861,12 @@ begin
 
   if (params.IndexOfName('user_keys') <> -1) then
   begin
-    UserKeys[1] := params.Arrays['user_keys'].Strings[0];
-    UserKeys[2] := params.Arrays['user_keys'].Strings[1];
-    UserKeys[3] := params.Arrays['user_keys'].Strings[2];
-    ConfIni.WriteString('Default', 'UserKey1', UserKeys[1]);
-    ConfIni.WriteString('Default', 'UserKey2', UserKeys[2]);
-    ConfIni.WriteString('Default', 'UserKey3', UserKeys[3]);
+    UserKey1 := params.Arrays['user_keys'].Strings[0];
+    UserKey2 := params.Arrays['user_keys'].Strings[1];
+    UserKey3 := params.Arrays['user_keys'].Strings[2];
+    ConfIni.WriteString('Default', 'UserKey1', UserKey1);
+    ConfIni.WriteString('Default', 'UserKey2', UserKey2);
+    ConfIni.WriteString('Default', 'UserKey3', UserKey3);
   end;
 
   // reply result
@@ -942,7 +943,9 @@ begin
         begin
           HasSuperKey := True;
         end
-        else if ( UserKeys.IndexOf(parsed.Strings['key']) <> -1 ) then
+        else if ((parsed.Strings['key'] = UserKey1) or
+          (parsed.Strings['key'] = UserKey2) or
+          (parsed.Strings['key'] = UserKey3)) then
         begin
           HasSuperKey := False;
         end
