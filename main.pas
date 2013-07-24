@@ -109,15 +109,15 @@ type
   private
     { private declarations }
     fSockConnected: Boolean;
-    fPowerControl1: Boolean;
-    fContactSensor1: Boolean;
-    fAlarmArmed: Boolean;
-    fAlarmFired: Boolean;
+    fPowerControl1: integer;
+    fContactSensor1: integer;
+    fAlarmArmed: integer;
+    fAlarmFired: integer;
 
     procedure SetSockConnected(AState: Boolean);
-    procedure SetPowerControl1(AState: Boolean);
-    procedure SetContactSensor1(AState: Boolean);
-    procedure SetAlarmArmed(AState: Boolean);
+    procedure SetPowerControl1(AState: integer);
+    procedure SetContactSensor1(AState: integer);
+    procedure SetAlarmArmed(AState: integer);
   public
     { public declarations }
     fMCUID: String;
@@ -143,9 +143,9 @@ type
 
     property SockConnected: Boolean read fSockConnected write SetSockConnected;
     // devices:
-    property PowerControl1: Boolean read fPowerControl1 write SetPowerControl1;
-    property ContactSensor1: Boolean read fContactSensor1 write SetContactSensor1;
-    property AlarmArmed: Boolean read fAlarmArmed write SetAlarmArmed;
+    property PowerControl1: integer read fPowerControl1 write SetPowerControl1;
+    property ContactSensor1: integer read fContactSensor1 write SetContactSensor1;
+    property AlarmArmed: integer read fAlarmArmed write SetAlarmArmed;
 
   end;
 
@@ -224,11 +224,11 @@ begin
   try
     Result := TJSONArray.Create(
       [TJSONObject.Create(['type', 'power_control', 'device_id', '1',
-      'power', TJSONBoolean.Create(PowerControl1)]),
+      'power', PowerControl1]),
       TJSONObject.Create(['type', 'contact_sensor', 'device_id',
-      '2', 'contact', TJSONBoolean.Create(ContactSensor1)]),
+      '2', 'contact', ContactSensor1]),
       TJSONObject.Create(['type', 'alarm', 'device_id', '3', 'arm',
-      TJSONBoolean.Create(AlarmArmed), 'fire', TJSONBoolean.Create(fAlarmFired)])]);
+      AlarmArmed, 'fire', fAlarmFired])]);
 
   except
     Result.Free;
@@ -248,27 +248,27 @@ begin
   begin
     mylog('Sounding Alarm RRR...RRR...RRR...');
     imgSirenSound.Visible := True;
-    fAlarmFired := True;
+    fAlarmFired := 1;
     sndPlaySound('burglar-alarm.wav', SND_NODEFAULT or SND_ASYNC or SND_LOOP);
   end
   else
   begin
     mylog('Alarm silenced.');
     imgSirenSound.Visible := False;
-    fAlarmFired := False;
+    fAlarmFired := 0;
     sndPlaySound(nil, 0); // Stops the sound
   end;
 
 end;
 
-procedure TfmMain.SetPowerControl1(AState: Boolean);
+procedure TfmMain.SetPowerControl1(AState: integer);
 begin
   if fPowerControl1 = AState then
     exit;
 
   fPowerControl1 := AState;
   // switch room image
-  if AState then
+  if AState = 1 then
     //imgHouse.Picture.LoadFromFile('room.png')
     imgHouse.Picture.LoadFromLazarusResource('room')
   else
@@ -276,7 +276,7 @@ begin
     imgHouse.Picture.LoadFromLazarusResource('room-dark');
 end;
 
-procedure TfmMain.SetContactSensor1(AState: Boolean);
+procedure TfmMain.SetContactSensor1(AState: integer);
 begin
   if fContactSensor1 = AState then
     exit;
@@ -285,10 +285,10 @@ begin
   // true: contact closed
   fContactSensor1 := AState;
   // switch burglar image
-  if not AState then
+  if AState = 0 then
   begin
     imgBurglar.Visible := True;
-    if AlarmARmed then
+    if AlarmARmed = 1 then
     begin
       // sound siren
       imgSirenSound.Visible := True;
@@ -302,7 +302,7 @@ begin
   end;
 end;
 
-procedure TfmMain.SetAlarmArmed(AState: Boolean);
+procedure TfmMain.SetAlarmArmed(AState: integer);
 begin
   if fAlarmArmed = AState then
     exit;
@@ -310,11 +310,11 @@ begin
   fAlarmArmed := AState;
 
   // switch alarm image
-  if AState then
+  if AState = 1 then
   begin
     // arm
     imgAlarm.Picture.LoadFromLazarusResource('alarm-armed');
-    if (not ContactSensor1) then
+    if ContactSensor1 = 0 then
     begin
       // sound the alarm if sensor already triggered
       SoundAlarm(True);
@@ -345,9 +345,9 @@ end;
 procedure TfmMain.FormCreate(Sender: TObject);
 begin
   // set properties defaults
-  fAlarmArmed := False;
-  fContactSEnsor1 := True;
-  fPowerControl1 := False;
+  fAlarmArmed := 0;
+  fContactSEnsor1 := 1;
+  fPowerControl1 := 0;
   imgHouse.Picture.LoadFromLazarusResource('room-dark');
   imgAlarm.Picture.LoadFromLazarusResource('alarm-disarmed');
   SockConnected := False;
@@ -411,7 +411,7 @@ end;
 
 procedure TfmMain.acResetContactSensorExecute(Sender: TObject);
 begin
-  ContactSensor1 := True;
+  ContactSensor1 := 1;
   SendStatus('');
 end;
 
@@ -430,7 +430,7 @@ end;
 
 procedure TfmMain.acTriggerContactSensorExecute(Sender: TObject);
 begin
-  ContactSensor1 := False;
+  ContactSensor1 := 0;
   SendStatus('');
 end;
 
@@ -555,25 +555,25 @@ end;
 
 procedure TfmMain.acManArmAlarmExecute(Sender: TObject);
 begin
-  AlarmArmed := True;
+  AlarmArmed := 1;
   SendStatus('');
 end;
 
 procedure TfmMain.acManDisarmAlarmExecute(Sender: TObject);
 begin
-  AlarmArmed := False;
+  AlarmArmed := 0;
   SendStatus('');
 end;
 
 procedure TfmMain.acManPowerControlOffExecute(Sender: TObject);
 begin
-  PowerControl1 := False;
+  PowerControl1 := 0;
   SendStatus('');
 end;
 
 procedure TfmMain.acManPowerControlOnExecute(Sender: TObject);
 begin
-  PowerControl1 := True;
+  PowerControl1 := 1;
   SendStatus('');
 end;
 
@@ -808,13 +808,13 @@ begin
       // so set the device
       if (Strings['device_id'] = '1') then  // power control on/off
       begin
-        PowerControl1 := Booleans['power'];
+        PowerControl1 := Integers['power'];
         mylog('ProcessRequest: device ID: ' + Strings['device_id'] +
           ' set to: ' + Strings['power']);
       end;
       if (Strings['device_id'] = '3') then // alarm on/off
       begin
-        AlarmArmed := Booleans['arm'];
+        AlarmArmed := Integers['arm'];
         mylog('ProcessRequest: device ID: ' + Strings['device_id'] +
           ' set to: ' + Strings['arm']);
       end;
