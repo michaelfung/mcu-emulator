@@ -832,7 +832,7 @@ begin
   else
     privilege := 'user';
 
-  parsed.Add('result', Tjsonboolean.Create(True));
+  parsed.Add('errno', 0);
   parsed.Add('params', Tjsonobject.Create(['privilege', privilege]));
 
   // send it
@@ -870,7 +870,7 @@ begin
   end;
 
   // reply result
-  parsed.Add('result', True);
+  parsed.Add('errno', 0);
   mylog('Send:' + parsed.AsJSON);
   mysock.SendString(parsed.AsJSON + CRLF);
 end;
@@ -920,7 +920,7 @@ begin
 
         // - auth fail
         if ((parsed.Strings['op'] = 'auth') and
-          (not parsed.Booleans['result'])) then
+          (parsed.Integers['errno'] > 0)) then
         begin
           MessageDlg('Please contact us to get a valid MCU ID.',
             mtError, [mbOK], 0);
@@ -995,7 +995,7 @@ begin
         mylog('ProcessRequest: Error: ' + E.Message);
         if ValidJSON then
         begin
-          parsed.Add('result', False);
+          parsed.Add('errno', 1);
           parsed.Add('message', E.Message);
           // send it
           mylog('Send:' + parsed.AsJSON);
