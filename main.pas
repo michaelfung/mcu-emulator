@@ -778,7 +778,7 @@ end;
 procedure TfmMain.DoReadReq(parsed: Tjsonobject);
 begin
   // generate result envelope header
-  parsed.Add('result', Tjsonboolean.Create(True));
+  parsed.Add('errno', 0);
   parsed.Int64s['date'] := GetUnixTimeStamp;
 
   // append the data
