@@ -180,7 +180,7 @@ var
 const
   AppModel = 'Win32EMU';
   AppVersion = '0.8';
-  AppProtocol = 4;
+  AppProtocol = 5;
 
   KeepAlivePing = 'PING';
   KeepAlivePong = 'PONG';
@@ -620,9 +620,7 @@ begin
   // generate JSON string
   J := TJSONObject.Create;
   try
-    J.Add('id', 1);
     J.Add('date', TJSONInt64Number.Create(GetUnixTimeStamp));
-    J.Add('type', 'ssn');
     J.Add('op', 'auth');
     //J.Add('type', 'q');
     J.Add('params', TJSONObject.Create(['mcu_id', fMCUID, 'mfg_code',
@@ -899,10 +897,7 @@ begin
         exit;
       end;
 
-      // for type = session
-      if (parsed.Strings['type'] = 'ssn') then
-      begin
-        // supported session op: 'auth', 'config'
+        // supported op: 'auth', 'config', '
         // - config
         if (parsed.Strings['op'] = 'config') then
         begin
@@ -924,15 +919,11 @@ begin
         begin
           MessageDlg('Please contact us to get a valid MCU ID.',
             mtError, [mbOK], 0);
+          exit;
         end;
-        exit;
-      end;
 
-      // for type = application
-      if (parsed.Strings['type'] = 'app') then
-      begin
-
-        // validate controller id
+        // the following need mcu_id present and valid key
+        // validate mcu_id
         if (fMCUID <> parsed.Strings['mcu_id']) then
           raise EMyException.Create('MCU ID mismatch:' +
             parsed.Strings['mcu_id']);
@@ -980,14 +971,8 @@ begin
           exit;
         end;
 
-
         // handle other methods = invalid
         raise EMyException.Create('Invalid operation: ' + parsed.Strings['op']);
-
-      end;
-
-      // supported types
-      raise EMyException.Create('Invalid frame type:' + parsed.Strings['type']);
 
     except
       on E: Exception do
