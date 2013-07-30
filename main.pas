@@ -108,29 +108,29 @@ type
 
   private
     { private declarations }
-    fSockConnected: Boolean;
+    fSockConnected: boolean;
     fPowerControl1: integer;
     fContactSensor1: integer;
     fAlarmArmed: integer;
     fAlarmFired: integer;
 
-    procedure SetSockConnected(AState: Boolean);
+    procedure SetSockConnected(AState: boolean);
     procedure SetPowerControl1(AState: integer);
     procedure SetContactSensor1(AState: integer);
     procedure SetAlarmArmed(AState: integer);
   public
     { public declarations }
-    fMCUID: String;
-    fMfgCode: String;
-    NeedReload: Boolean;
-    UseSSL: Boolean;
-    procedure mylog(msg: String);
+    fMCUID: string;
+    fMfgCode: string;
+    NeedReload: boolean;
+    UseSSL: boolean;
+    procedure mylog(msg: string);
     procedure LoadConfig;
-    procedure ProcessRequest(Request: String);
-    procedure SoundAlarm(AState: Boolean);
+    procedure ProcessRequest(Request: string);
+    procedure SoundAlarm(AState: boolean);
     procedure CheckSockStatus(Sender: TObject; Reason: THookSocketReason;
-      const Value: Ansistring);
-    procedure SendStatus(RequestCode: String);
+      const Value: ansistring);
+    procedure SendStatus(RequestCode: string);
     procedure SendAuthRequest;
     procedure SetupSock;
     procedure DoOnConnected;
@@ -141,7 +141,7 @@ type
 
     function GetStatus: TJSONArray;
 
-    property SockConnected: Boolean read fSockConnected write SetSockConnected;
+    property SockConnected: boolean read fSockConnected write SetSockConnected;
     // devices:
     property PowerControl1: integer read fPowerControl1 write SetPowerControl1;
     property ContactSensor1: integer read fContactSensor1 write SetContactSensor1;
@@ -150,32 +150,32 @@ type
   end;
 
 { functions }
-function DoConnect: Boolean;
-function GetUnixTimeStamp: Int64;
+function DoConnect: boolean;
+function GetUnixTimeStamp: int64;
 
 { procedures }
 procedure DoDisconnect;
-procedure DoSend(msg: String);
+procedure DoSend(msg: string);
 
 var
   fmMain: TfmMain;
   mysock: TTCPBlockSocket;
   ConfIni: Tinifile;
-  LogFilePath: String;
-  INIFilePath: String;
+  LogFilePath: string;
+  INIFilePath: string;
 
-  ServerName: String;
-  ServerPort: String;
-  SuperKey: String;
-  UserKey1, UserKey2, UserKey3: String;
-  HasSuperKey: Boolean = False;
+  ServerName: string;
+  ServerPort: string;
+  SuperKey: string;
+  UserKey1, UserKey2, UserKey3: string;
+  HasSuperKey: boolean = False;
   myReadThread: TReadThread;
   mySockThread: TSockThread;
-  AutoReConnect: Boolean = True;
-  ConnectOnStart: Boolean = False;
-  LogKeepalive: Boolean = True;
+  AutoReConnect: boolean = True;
+  ConnectOnStart: boolean = False;
+  LogKeepalive: boolean = True;
   timerKeepAlive: TFPTimer;
-  IsMCUPowerOn: Boolean = False;
+  IsMCUPowerOn: boolean = False;
 
 const
   AppModel = 'Win32EMU';
@@ -192,7 +192,7 @@ implementation
 
 { TfmMain }
 
-procedure TfmMain.mylog(msg: String);
+procedure TfmMain.mylog(msg: string);
 begin
   // control memory usage of moLog
   if (moLog.Lines.Count > 5000) then
@@ -224,9 +224,8 @@ begin
   try
     Result := TJSONArray.Create(
       [TJSONObject.Create(['type', 'power_control', 'device_id', '1',
-      'power', PowerControl1]),
-      TJSONObject.Create(['type', 'contact_sensor', 'device_id',
-      '2', 'contact', ContactSensor1]),
+      'power', PowerControl1]), TJSONObject.Create(
+      ['type', 'contact_sensor', 'device_id', '2', 'contact', ContactSensor1]),
       TJSONObject.Create(['type', 'alarm', 'device_id', '3', 'arm',
       AlarmArmed, 'fire', fAlarmFired])]);
 
@@ -236,13 +235,13 @@ begin
 
 end;
 
-procedure TfmMain.SetSockConnected(AState: Boolean);
+procedure TfmMain.SetSockConnected(AState: boolean);
 begin
   fSockConnected := AState;
   imgNetErr.Visible := not AState;
 end;
 
-procedure TfmMain.SoundAlarm(AState: Boolean);
+procedure TfmMain.SoundAlarm(AState: boolean);
 begin
   if AState then
   begin
@@ -447,7 +446,7 @@ end;
 
 procedure TfmMain.acPowerControlOnExecute(Sender: TObject);
 var
-  request: String;
+  request: string;
 begin
   request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"1", "power":true} ] }';
@@ -456,7 +455,7 @@ end;
 
 procedure TfmMain.acPowerControlOffExecute(Sender: TObject);
 var
-  request: String;
+  request: string;
 begin
   request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"1", "power":false} ] }';
@@ -465,7 +464,7 @@ end;
 
 procedure TfmMain.acArmAlarmExecute(Sender: TObject);
 var
-  request: String;
+  request: string;
 begin
   request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"3", "arm":true} ] }';
@@ -516,7 +515,7 @@ end;
 
 procedure TfmMain.acDisarmAlarmExecute(Sender: TObject);
 var
-  request: String;
+  request: string;
 begin
   request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"3", "arm":false} ] }';
@@ -545,7 +544,7 @@ end;
 
 procedure TfmMain.acInjectFrameExecute(Sender: TObject);
 var
-  Frame: String;
+  Frame: string;
 begin
   // open dialog to get a line of json text
   Frame := '{"id":1,"type":"app","op":"noop"}';
@@ -642,7 +641,7 @@ begin
   end;
 end;
 
-procedure TfmMain.SendStatus(RequestCode: String);
+procedure TfmMain.SendStatus(RequestCode: string);
 var
   J: TJSONObject;
 begin
@@ -681,9 +680,9 @@ end;
 
 //class procedure MyCallback.Status(Sender: TObject; Reason: THookSocketReason; const Value: string);
 procedure TfmMain.CheckSockStatus(Sender: TObject; Reason: THookSocketReason;
-  const Value: Ansistring);
+  const Value: ansistring);
 var
-  v: String;
+  v: string;
 begin
   // ignore these states:
   if (reason = hr_readcount) or (reason = hr_writecount) or
@@ -717,7 +716,7 @@ begin
 
   end;
 
-  v := getEnumName(typeinfo(THookSocketReason), Integer(Reason)) + ':' + Value;
+  v := getEnumName(typeinfo(THookSocketReason), integer(Reason)) + ':' + Value;
   mylog('Sock Status:' + v);
 end;
 
@@ -733,7 +732,7 @@ begin
   myReadThread.OnRequest := @fmMain.ProcessRequest;
 end;
 
-function DoConnect(): Boolean;
+function DoConnect(): boolean;
 begin
   Result := False;
 
@@ -762,12 +761,12 @@ begin
   end;
 end;
 
-procedure DoSend(msg: String);
+procedure DoSend(msg: string);
 begin
   mysock.SendString(msg + CRLF);
 end;
 
-function GetUnixTimeStamp: Int64;
+function GetUnixTimeStamp: int64;
 begin
   { TODO : Fix 'DateTimeToUnix not locale aware' problem }
   Result := DateTimeToUnix(Now) - (8 * 3600);
@@ -789,7 +788,7 @@ end;
 procedure TfmMain.DoSetReq(parsed: Tjsonobject);
 var
   devices: TJSONArray;
-  i: Integer;
+  i: integer;
 begin
 
   // require superkey for these operations
@@ -823,7 +822,7 @@ end;
 
 procedure TfmMain.DoVerifyKeyReq(parsed: Tjsonobject);
 var
-  privilege: String;
+  privilege: string;
 begin
   if (HasSuperKey) then
     privilege := 'super'
@@ -873,10 +872,10 @@ begin
   mysock.SendString(parsed.AsJSON + CRLF);
 end;
 
-procedure TfmMain.ProcessRequest(Request: String);
+procedure TfmMain.ProcessRequest(Request: string);
 var
   p: TJSONParser;
-  ValidJSON: Boolean;
+  ValidJSON: boolean;
   parsed: TJSONObject;
   params: TJSONObject;
 begin
@@ -897,82 +896,89 @@ begin
         exit;
       end;
 
-        // supported op: 'auth', 'config', '
-        // - config
-        if (parsed.Strings['op'] = 'config') then
+      // supported op: 'auth', 'config', '
+      // - config
+      if (parsed.Strings['op'] = 'config') then
+      begin
+        params := parsed.Objects['params'];
+        if (params.Integers['keepalive_interval'] > 0) then
+          myReadThread.KeepaliveInterval := params.Integers['keepalive_interval'];
+        if (params.Integers['protocol_major'] > AppProtocol) then
         begin
-          params := parsed.Objects['params'];
-          if (params.Integers['keepalive_interval'] > 0) then
-            myReadThread.KeepaliveInterval := params.Integers['keepalive_interval'];
-          if (params.Integers['protocol_major'] > AppProtocol) then
-          begin
-            // we are not compatible, terminate app
-            MessageDlg('This version is obsoleted. Please upgrade.',
-              mtInformation, [mbOK], 0);
-            Close;
-          end;
+          // we are not compatible, terminate app
+          MessageDlg('This version is obsoleted. Please upgrade.',
+            mtInformation, [mbOK], 0);
+          Close;
         end;
+        exit;
+      end;
 
-        // - auth fail
-        if ((parsed.Strings['op'] = 'auth') and
-          (parsed.Integers['errno'] > 0)) then
+      // - auth fail
+      if (parsed.Strings['op'] = 'auth') then
+      begin
+        if (parsed.Integers['errno'] = 0) then
+        begin
+          // Good, authenticated!
+          mylog('Good, authenticated with server!');
+          exit;
+        end else
         begin
           MessageDlg('Please contact us to get a valid MCU ID.',
             mtError, [mbOK], 0);
-          exit;
         end;
+      end;
 
-        // the following need mcu_id present and valid key
-        // validate mcu_id
-        if (fMCUID <> parsed.Strings['mcu_id']) then
-          raise EMyException.Create('MCU ID mismatch:' +
-            parsed.Strings['mcu_id']);
+      // the following need mcu_id present and valid key
+      // validate mcu_id
+      if (fMCUID <> parsed.Strings['mcu_id']) then
+        raise EMyException.Create('MCU ID mismatch:' +
+          parsed.Strings['mcu_id']);
 
-        // validate key , raise exception if invalid
-        // raise EMyException.Create('Access Denied: Invalid Key');
-        if (parsed.Strings['key'] = SuperKey) then
-        begin
-          HasSuperKey := True;
-        end
-        else if ((parsed.Strings['key'] = UserKey1) or
-          (parsed.Strings['key'] = UserKey2) or
-          (parsed.Strings['key'] = UserKey3)) then
-        begin
-          HasSuperKey := False;
-        end
-        else
-          raise EMyException.Create('Access Denied: Invalid Key');
+      // validate key , raise exception if invalid
+      if (parsed.Strings['key'] = SuperKey) then
+      begin
+        HasSuperKey := True;
+      end
+      else if ((parsed.Strings['key'] = UserKey1) or
+        (parsed.Strings['key'] = UserKey2) or
+        (parsed.Strings['key'] = UserKey3)) then
+      begin
+        HasSuperKey := False;
+      end
+      else
+        raise EMyException.Create('Access Denied: Invalid Key');
 
-        // - 'read' method
-        if (parsed.Strings['op'] = 'read') then
-        begin
-          DoReadReq(parsed);
-          exit;
-        end;
+      // - 'read' method
+      if (parsed.Strings['op'] = 'read') then
+      begin
+        DoReadReq(parsed);
+        exit;
+      end;
 
-        // - 'set' method
-        if (parsed.Strings['op'] = 'set') then
-        begin
-          DoSetReq(parsed);
-          exit;
-        end;
+      // - 'set' method
+      if (parsed.Strings['op'] = 'set') then
+      begin
+        DoSetReq(parsed);
+        exit;
+      end;
 
-        // - 'verify_key' method
-        if (parsed.Strings['op'] = 'verify_key') then
-        begin
-          DoVerifyKeyReq(parsed);
-          exit;
-        end;
+      // - 'verify_key' method
+      if (parsed.Strings['op'] = 'verify_key') then
+      begin
+        DoVerifyKeyReq(parsed);
+        exit;
+      end;
 
-        // - 'set_key' method
-        if (parsed.Strings['op'] = 'set_key') then
-        begin
-          DoSetKeyReq(parsed);
-          exit;
-        end;
+      // - 'set_key' method
+      if (parsed.Strings['op'] = 'set_key') then
+      begin
+        DoSetKeyReq(parsed);
+        exit;
+      end;
 
-        // handle other methods = invalid
-        raise EMyException.Create('Invalid operation: ' + parsed.Strings['op']);
+      // handle other methods = invalid
+      raise EMyException.Create('Invalid operation: ' + parsed.Strings['op']);
+
 
     except
       on E: Exception do
