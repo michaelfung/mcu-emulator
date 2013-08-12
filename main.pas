@@ -622,10 +622,9 @@ begin
     J.Add('date', TJSONInt64Number.Create(GetUnixTimeStamp));
     J.Add('op', 'auth');
     //J.Add('type', 'q');
-    J.Add('params', TJSONObject.Create(['mcu_id', fMCUID, 'mfg_code',
+    J.Add('params', TJSONObject.Create(['hub_id', fMCUID, 'mfg_code',
       fMfgCode, 'model', AppModel, 'version', AppVersion, 'protocol',
-      AppProtocol, 'super_key', SuperKey, 'user_keys',
-      TJSONArray.Create([UserKey1, UserKey2, UserKey3])]));
+      AppProtocol, 'super_key', SuperKey, 'user_key', UserKey1]));
 
     mylog('Send:' + J.AsJSON);
 
@@ -658,7 +657,7 @@ begin
     J.Add('date', TJSONInt64Number.Create(GetUnixTimeStamp));
     J.Add('type', 'app');
     J.Add('op', 'status');
-    J.Add('mcu_id', fMCUID);
+    J.Add('hub_id', fMCUID);
     J.Add('devices', GetStatus);
 
 
@@ -856,14 +855,10 @@ begin
     ConfIni.WriteString('Default', 'SuperKey', SuperKey);
   end;
 
-  if (params.IndexOfName('user_keys') <> -1) then
+  if (params.IndexOfName('user_key') <> -1) then
   begin
-    UserKey1 := params.Arrays['user_keys'].Strings[0];
-    UserKey2 := params.Arrays['user_keys'].Strings[1];
-    UserKey3 := params.Arrays['user_keys'].Strings[2];
+    UserKey1 := params.Strings['user_key'];
     ConfIni.WriteString('Default', 'UserKey1', UserKey1);
-    ConfIni.WriteString('Default', 'UserKey2', UserKey2);
-    ConfIni.WriteString('Default', 'UserKey3', UserKey3);
   end;
 
   // reply result
@@ -903,7 +898,7 @@ begin
         params := parsed.Objects['params'];
         if (params.Integers['keepalive_interval'] > 0) then
           myReadThread.KeepaliveInterval := params.Integers['keepalive_interval'];
-        if (params.Integers['protocol_major'] > AppProtocol) then
+        if (params.Integers['protocol'] > AppProtocol) then
         begin
           // we are not compatible, terminate app
           MessageDlg('This version is obsoleted. Please upgrade.',
@@ -930,18 +925,16 @@ begin
 
       // the following need mcu_id present and valid key
       // validate mcu_id
-      if (fMCUID <> parsed.Strings['mcu_id']) then
+      if (fMCUID <> parsed.Strings['hub_id']) then
         raise EMyException.Create('MCU ID mismatch:' +
-          parsed.Strings['mcu_id']);
+          parsed.Strings['hub_id']);
 
       // validate key , raise exception if invalid
       if (parsed.Strings['key'] = SuperKey) then
       begin
         HasSuperKey := True;
       end
-      else if ((parsed.Strings['key'] = UserKey1) or
-        (parsed.Strings['key'] = UserKey2) or
-        (parsed.Strings['key'] = UserKey3)) then
+      else if (parsed.Strings['key'] = UserKey1) then
       begin
         HasSuperKey := False;
       end
