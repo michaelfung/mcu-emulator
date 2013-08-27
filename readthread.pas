@@ -121,7 +121,7 @@ begin
         // no data, next loop
       begin
         KeepaliveTimeout := KeepaliveTimeout + 1;
-        if (KeepaliveTimeout > KeepaliveInterval) then
+        if (KeepaliveTimeout > (KeepaliveInterval + 15)) then
         begin
             MyLog('Keepalive timeout, force disconnect');
             break;

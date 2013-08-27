@@ -898,6 +898,7 @@ begin
         params := parsed.Objects['params'];
         if (params.Integers['keepalive_interval'] > 0) then
           myReadThread.KeepaliveInterval := params.Integers['keepalive_interval'];
+          mylog('Set KeepaliveInterval to ' + inttostr(params.Integers['keepalive_interval']));
         if (params.Integers['protocol'] > AppProtocol) then
         begin
           // we are not compatible, terminate app
