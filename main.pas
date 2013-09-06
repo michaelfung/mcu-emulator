@@ -448,7 +448,7 @@ procedure TfmMain.acPowerControlOnExecute(Sender: TObject);
 var
   request: string;
 begin
-  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"1", "power":true} ] }';
   ProcessRequest(request);
 end;
@@ -457,7 +457,7 @@ procedure TfmMain.acPowerControlOffExecute(Sender: TObject);
 var
   request: string;
 begin
-  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"1", "power":false} ] }';
   ProcessRequest(request);
 end;
@@ -466,7 +466,7 @@ procedure TfmMain.acArmAlarmExecute(Sender: TObject);
 var
   request: string;
 begin
-  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"3", "arm":true} ] }';
   ProcessRequest(request);
 end;
@@ -517,7 +517,7 @@ procedure TfmMain.acDisarmAlarmExecute(Sender: TObject);
 var
   request: string;
 begin
-  request := '{ "id" : 1, "type":"app", "op" : "set", "mcu_id" : "' +
+  request := '{ "id" : 1, "op" : "set", "mcu_id" : "' +
     fMCUID + '", "devices" : [ {"device_id":"3", "arm":false} ] }';
   ProcessRequest(request);
 end;
@@ -547,7 +547,7 @@ var
   Frame: string;
 begin
   // open dialog to get a line of json text
-  Frame := '{"id":1,"type":"app","op":"noop"}';
+  Frame := '{"id":1,"op":"noop"}';
   if InputQuery('Inject Frame', 'Enter JSON String', Frame) then
     ProcessRequest(Frame);
 end;
@@ -655,7 +655,7 @@ begin
       J.Add('id', RequestCode);
 
     J.Add('date', TJSONInt64Number.Create(GetUnixTimeStamp));
-    J.Add('type', 'app');
+    //J.Add('type', 'app');
     J.Add('op', 'status');
     J.Add('hub_id', fMCUID);
     J.Add('devices', GetStatus);
